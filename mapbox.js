@@ -57,11 +57,7 @@ const displaySidebar = (restroomProps, summaryData) => {
             summaryData.remarks
           )}</h1>
         </div>
-
-        <div id="hours" class="col-6 text-center">
-          <h3 class="sidebar-top-labels">RATING</h3>
-          <h1 class="text-center sidebar-top-values">3.5/5</h1>
-        </div>
+        
       </div>
     </div>`;
 
@@ -90,7 +86,7 @@ map.on("click", "bathrooms", function (e) {
 
   map.flyTo({
     center: feature.geometry.coordinates,
-    // offset: [-100, 100],
+    // offset: [-400, 100],
     zoom: 16,
     speed: 0.75,
     curve: 1.5,
