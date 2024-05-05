@@ -90,7 +90,7 @@ map.on("click", "bathrooms", function (e) {
 
   map.flyTo({
     center: feature.geometry.coordinates,
-    offset: [-400, 100],
+    offset: [-200, 100],
     zoom: 16,
     speed: 0.75,
     curve: 1.5,
