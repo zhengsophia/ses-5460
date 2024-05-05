@@ -4,8 +4,8 @@ mapboxgl.accessToken =
 const map = new mapboxgl.Map({
   container: "map",
   style: "mapbox://styles/szheng8/clvr0zi6i05bi01ped6ne4s6t",
-  center: [-71.073046, 42.359686],
-  zoom: 13,
+  center: [-71.04, 42.37],
+  zoom: 12,
 });
 
 const cleanFeatureString = (s) => {
@@ -70,7 +70,7 @@ const displaySidebar = (restroomProps, summaryData) => {
   closeButton.onclick = () => {
     mapElement.removeChild(sidebar);
     map.flyTo({
-      center: [-71.073046, 42.359686],
+      center: [-71.04, 42.37],
       zoom: 13,
       speed: 0.75,
       curve: 1.5,
