@@ -8,14 +8,19 @@ const map = new mapboxgl.Map({
   zoom: 12,
 });
 
+const cleanFeatureString = (s) => {
+  console.log(s.replace(/(?:\\[rn])+/g, "<br>"));
+  return s.replace(/(?:\\[rn])+/g, "<br>");
+};
+
 /**
  * Displays the sidebar and its content when an icon is clicked on the map.
  *
  * @param {object} restroomProps - The restroom properties as passed in from the mapbox layer
  * @param {object} originalData - The data as passed in from the original csv
  */
-const displaySidebar = (facilityProps, summaryData) => {
-  console.log(summaryData);
+const displaySidebar = (restroomProps, summaryData) => {
+  console.log("summary data at displaySidebar", summaryData);
 
   // Gets the map element and appends the sidebar content to it
   const mapElement = document.getElementById("map");
@@ -28,37 +33,37 @@ const displaySidebar = (facilityProps, summaryData) => {
   sidebar.innerHTML = `
     <div id="sidebar-content-container" class="container">
       <div class="sidebar-header">
-        <h2 id = "sidebar-title">${facilityProps.FACILITY_APPROVED}</h2>
+        <h2 id = "sidebar-title">${restroomProps.name}</h2>
         <button id="close-sidebar" type="button" class="btn-close btn-close-white btn-lg" aria-label="Close"></button>
       </div>
       <hr>
 
       <div class="row sidebar-top-row">
-        <div id="average-days" class="col-6 text-center">
-          <h3 class="sidebar-top-labels">Average duration of separation</h3>
-          <h1 class="text-center sidebar-top-values">${Math.round(
-            summaryData.Duration
-          )}<label>days</label></h1>
-
+        <div id="adress" class="col-6 text-center">
+          <h3 class="sidebar-top-labels">ADDRESS</h3>
+          <h1 class="text-center sidebar-top-values">${summaryData.address}</h1>
         </div>
-        <div id="reunification-rate" class="col-6 text-center">
-          <h3 class="sidebar-top-labels">Reunification rate</h3>
-          <h1 class="text-center sidebar-top-values">${Math.round(
-            summaryData.discharge_rate * 100
-          )}<label>%</label></h1>
-        </div>
-      </div>
-      <div id="arc-diagram"></div>
 
-      <div id="sidebar-summary-container" class="sidebar-summary-container">
-        <h3 class="sidebar-summary-main" style="text-align: center" id="summary-text-${dashify(
-          facilityProps.FACILITY_APPROVED
-        )}">Waiting for data...</h3>
-        <label>(Out of those reunited)</label>
+        <div id="hours" class="col-6 text-center">
+          <h3 class="sidebar-top-labels">HOURS OF SERVICE</h3>
+          <h1 class="text-center sidebar-top-values">${cleanFeatureString(
+            summaryData.hours
+          )}</h1>
+        </div>
+
+        <div id="hours" class="col-6 text-center">
+          <h3 class="sidebar-top-labels">MORE INFORMATION</h3>
+          <h1 class="text-center sidebar-top-values">${cleanFeatureString(
+            summaryData.remarks
+          )}</h1>
+        </div>
+
+        <div id="hours" class="col-6 text-center">
+          <h3 class="sidebar-top-labels">RATING</h3>
+          <h1 class="text-center sidebar-top-values">3.5/5</h1>
+        </div>
       </div>
     </div>`;
-
-  loadAndDraw(facilityProps.FACILITY_APPROVED);
 
   // closing the sidebar
   const closeButton = document.getElementById("close-sidebar");
@@ -86,7 +91,7 @@ map.on("click", "bathrooms", function (e) {
   map.flyTo({
     center: feature.geometry.coordinates,
     offset: [-400, 100],
-    zoom: 15,
+    zoom: 16,
     speed: 0.75,
     curve: 1.5,
   });
@@ -94,20 +99,18 @@ map.on("click", "bathrooms", function (e) {
   const restroomProps = feature.properties;
 
   if (features.length) {
-    d3.csv("BostonBathrooms.csv", d3.autoType).then((data) => {
+    d3.csv(
+      "https://raw.githubusercontent.com/zhengsophia/ses-5460/main/BostonBathrooms.csv",
+      d3.autoType
+    ).then((data) => {
       summary_data = data.find((row) => row.name === restroomProps.name);
-      console.log(facilityProps);
+      console.log(restroomProps);
       console.log(summary_data);
-      displaySidebar(facilityProps, summary_data);
+      displaySidebar(restroomProps, summary_data);
     });
   } else {
     //if not hovering over a feature set tooltip to empty
     const map = document.getElementById("map");
     map.removeChild(document.getElementById("sidebar"));
   }
-});
-
-var nav = new mapboxgl.NavigationControl({
-  showCompass: false,
-  showZoom: true,
 });
